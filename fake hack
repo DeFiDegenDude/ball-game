@@ -1,5 +1,6 @@
 #fake hack by codecho additional guide by me
 #runnable through python IDE
+#additional measures == 0
 
 from tkinter import * #tkinter creates windows
 
