@@ -5,7 +5,7 @@ def submit():
     name = entry_name.get()
     email = entry_email.get()
     if "@" not in email and "." not in email:
-        messagebox.showwarning("Invalid email address")
+        messagebox.showwarning("Form Error", "Invalid email address")
         
     elif name and email:
         messagebox.showinfo("Form Submitted", f"Name: {name}\nEmail: {email}")
