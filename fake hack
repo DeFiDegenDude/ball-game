@@ -1,0 +1,29 @@
+#fake hack by codecho additional guide by me
+
+from tkinter import * #tkinter creates windows
+
+import random
+
+
+
+root = Tk() #window created
+
+letters = ["0", "1"]
+
+root.attributes('-fullscreen', 1)
+
+root.config(bg='black')
+
+
+
+for x in range(0, 1300, 20):
+
+    for y in range(0, 720, 20):
+
+        lb = Label(root, bg='black', text=random.choice(letters), fg='green')
+
+        lb.place(x=x, y=y, height=20, width=20)
+
+
+
+root.mainloop()
