@@ -1,0 +1,70 @@
+import json
+import os
+from datetime import datetime
+
+class FileStorage:
+    """
+    A class to manage file storage like a GitHub repository, allowing users to save and load .py files.
+    """
+    STORAGE_DIR = "storage"
+
+    def __init__(self):
+        if not os.path.exists(self.STORAGE_DIR):
+            os.makedirs(self.STORAGE_DIR)
+
+    def save_file(self, filename: str, content: str):
+        """Save a Python file to storage."""
+        filepath = os.path.join(self.STORAGE_DIR, filename)
+        with open(filepath, "w") as f:
+            f.write(content)
+        print(f"File '{filename}' saved successfully!")
+
+    def load_file(self, filename: str):
+        """Load a Python file from storage."""
+        filepath = os.path.join(self.STORAGE_DIR, filename)
+        if os.path.exists(filepath):
+            with open(filepath, "r") as f:
+                content = f.read()
+            print(f"File '{filename}' loaded successfully!")
+            return content
+        print("File not found!")
+        return None
+
+    def list_files(self):
+        """List all Python files in storage."""
+        files = [f for f in os.listdir(self.STORAGE_DIR) if f.endswith(".py")]
+        if files:
+            print("Stored files:")
+            for file in files:
+                print("-", file)
+        else:
+            print("No files stored yet.")
+
+# Example usage
+if __name__ == "__main__":
+    storage = FileStorage()
+    
+    while True:
+        print("\nMenu:")
+        print("1. Save a new file")
+        print("2. Load a file")
+        print("3. List stored files")
+        print("4. Exit")
+        choice = input("Enter your choice: ")
+        
+        if choice == "1":
+            filename = input("Enter file name (with .py extension): ")
+            content = input("Enter file content: ")
+            storage.save_file(filename, content)
+        elif choice == "2":
+            filename = input("Enter file name to load: ")
+            content = storage.load_file(filename)
+            if content:
+                print("\nFile Content:\n" + content)
+        elif choice == "3":
+            storage.list_files()
+        elif choice == "4":
+            print("Exiting. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
