@@ -4,7 +4,7 @@ from datetime import datetime
 
 class FileStorage:
     """
-    A class to manage file storage like a GitHub repository, allowing users to save and load .py files.
+    A class to manage file storage like a GitHub repository, allowing users to save and load files with subdirectories.
     """
     STORAGE_DIR = "storage"
 
@@ -12,33 +12,47 @@ class FileStorage:
         if not os.path.exists(self.STORAGE_DIR):
             os.makedirs(self.STORAGE_DIR)
 
-    def save_file(self, filename: str, content: str):
-        """Save a Python file to storage."""
-        filepath = os.path.join(self.STORAGE_DIR, filename)
+    def save_file(self, folder: str, filename: str, content: str):
+        """Save a file to a subdirectory."""
+        folder_path = os.path.join(self.STORAGE_DIR, folder)
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        
+        filepath = os.path.join(folder_path, filename)
         with open(filepath, "w") as f:
             f.write(content)
-        print(f"File '{filename}' saved successfully!")
+        print(f"File '{filename}' saved successfully in '{folder}'!")
 
-    def load_file(self, filename: str):
-        """Load a Python file from storage."""
-        filepath = os.path.join(self.STORAGE_DIR, filename)
+    def load_file(self, folder: str, filename: str):
+        """Load a file from a subdirectory."""
+        filepath = os.path.join(self.STORAGE_DIR, folder, filename)
         if os.path.exists(filepath):
             with open(filepath, "r") as f:
                 content = f.read()
-            print(f"File '{filename}' loaded successfully!")
+            print(f"File '{filename}' loaded successfully from '{folder}'!")
             return content
         print("File not found!")
         return None
 
-    def list_files(self):
-        """List all Python files in storage."""
-        files = [f for f in os.listdir(self.STORAGE_DIR) if f.endswith(".py")]
-        if files:
-            print("Stored files:")
-            for file in files:
-                print("-", file)
+    def list_files(self, folder: str = None):
+        """List all files in storage or a specific subdirectory."""
+        if folder:
+            folder_path = os.path.join(self.STORAGE_DIR, folder)
+            if os.path.exists(folder_path):
+                files = os.listdir(folder_path)
+                if files:
+                    print(f"Stored files in '{folder}':")
+                    for file in files:
+                        print("-", file)
+                else:
+                    print(f"No files stored in '{folder}' yet.")
+            else:
+                print("Folder not found!")
         else:
-            print("No files stored yet.")
+            print("Stored folders:")
+            folders = [f for f in os.listdir(self.STORAGE_DIR) if os.path.isdir(os.path.join(self.STORAGE_DIR, f))]
+            for folder in folders:
+                print("-", folder)
 
 # Example usage
 if __name__ == "__main__":
@@ -46,24 +60,30 @@ if __name__ == "__main__":
     
     while True:
         print("\nMenu:")
-        print("1. Save a new file")
-        print("2. Load a file")
-        print("3. List stored files")
-        print("4. Exit")
+        print("1. Save a new file in a subdirectory")
+        print("2. Load a file from a subdirectory")
+        print("3. List stored files in a folder")
+        print("4. List all folders")
+        print("5. Exit")
         choice = input("Enter your choice: ")
         
         if choice == "1":
-            filename = input("Enter file name (with .py extension): ")
+            folder = input("Enter folder name: ")
+            filename = input("Enter file name: ")
             content = input("Enter file content: ")
-            storage.save_file(filename, content)
+            storage.save_file(folder, filename, content)
         elif choice == "2":
+            folder = input("Enter folder name: ")
             filename = input("Enter file name to load: ")
-            content = storage.load_file(filename)
+            content = storage.load_file(folder, filename)
             if content:
                 print("\nFile Content:\n" + content)
         elif choice == "3":
-            storage.list_files()
+            folder = input("Enter folder name: ")
+            storage.list_files(folder)
         elif choice == "4":
+            storage.list_files()
+        elif choice == "5":
             print("Exiting. Goodbye!")
             break
         else:
