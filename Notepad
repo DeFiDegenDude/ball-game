@@ -1,0 +1,71 @@
+import tkinter as tk
+from tkinter import filedialog
+FontFamily = "Arial"
+FontS = 12
+
+
+def apply_tag(tag_name, font_style):
+    try:
+        selected_text = text.tag_ranges(tk.SEL)
+        if selected_text:
+            text.tag_configure(tag_name, font=font_style)  # Configure the tag
+            text.tag_add(tag_name, tk.SEL_FIRST, tk.SEL_LAST)  # Apply to selected text
+    except:
+        pass  # Ignore if nothing is selected
+
+def bold_text():
+    apply_tag("bold", ("FontFamily", FontS, "bold"))
+
+def italic_text():
+    apply_tag("italic", ("FontFamily", FontS, "italic"))
+
+def center_text():
+    try:
+        selected_text = text.tag_ranges(tk.SEL)
+        if selected_text:
+            text.tag_configure("center", justify="center")
+            text.tag_add("center", tk.SEL_FIRST, tk.SEL_LAST)
+    except:
+        pass
+
+def normal_text():
+    try:
+        selected_text = text.tag_ranges(tk.SEL)
+        if selected_text:
+            text.tag_configure("left", justify="left")
+            text.tag_add("left", tk.SEL_FIRST, tk.SEL_LAST)
+    except:
+        pass
+
+def save_to_file():
+    file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
+    if file_path:
+        with open(file_path, "w", encoding="utf-8") as file:
+            file.write(text.get("1.0", tk.END))  # Save text content
+
+def open_file():
+    file_path = filedialog.askopenfilename(filetypes=[("Text Files", "*.txt")])
+    if file_path:
+        text.delete("1.0", tk.END)  # Clear text widget
+        with open(file_path, "r", encoding="utf-8") as file:
+            text.insert("1.0", file.read())  # Load file content
+def size():
+    global FontS
+    FontS += 1
+
+root = tk.Tk()
+root.title("Tkinter Text Editor")
+
+text = tk.Text(root, wrap="word", font=(FontFamily, FontS))
+text.pack(expand=True, fill="both")
+
+# Bind keyboard shortcuts
+root.bind("<Control-Shift-B>", lambda event: bold_text())
+root.bind("<Control-Shift-I>", lambda event: italic_text())
+root.bind("<Control-Shift-E>", lambda event: center_text())
+root.bind("<Control-Shift-A>", lambda event: normal_text())
+root.bind("<Control-s>", lambda event: save_to_file)
+root.bind("<Control-o>", lambda event: open_file)
+root.bind("<Control-.>", lambda event: size)
+
+root.mainloop()
